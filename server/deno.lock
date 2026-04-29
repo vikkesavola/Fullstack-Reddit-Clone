@@ -1,0 +1,58 @@
+{
+  "version": "5",
+  "specifiers": {
+    "jsr:@denorg/scrypt@4.4.4": "4.4.4",
+    "jsr:@hono/hono@4.8.12": "4.8.12",
+    "jsr:@std/assert@0.222.1": "0.222.1",
+    "jsr:@std/assert@~0.222.1": "0.222.1",
+    "jsr:@std/crypto@0.222.1": "0.222.1",
+    "jsr:@std/encoding@0.222.1": "0.222.1",
+    "jsr:@std/encoding@~0.222.1": "0.222.1",
+    "jsr:@std/fmt@~0.222.1": "0.222.1",
+    "npm:postgres@3.4.7": "3.4.7"
+  },
+  "jsr": {
+    "@denorg/scrypt@4.4.4": {
+      "integrity": "81e82ad4627e91f4c98c1789b3382667f366a61702642ad5d3a8dddf7b444905",
+      "dependencies": [
+        "jsr:@std/assert@0.222.1",
+        "jsr:@std/crypto",
+        "jsr:@std/encoding@0.222.1"
+      ]
+    },
+    "@hono/hono@4.8.12": {
+      "integrity": "078037693c3ae9dece93ddd771d52ab61197231cc7633f741ac031eb3b28eb64"
+    },
+    "@std/assert@0.222.1": {
+      "integrity": "691637161ee584a9919d1f9950ddd1272feb8e0a19e83aa5b7563cedaf73d74c",
+      "dependencies": [
+        "jsr:@std/fmt"
+      ]
+    },
+    "@std/crypto@0.222.1": {
+      "integrity": "d5b9e6c704fadbcc384cd42c0b603ad4aea710ece0ff26426602681b64fd237c",
+      "dependencies": [
+        "jsr:@std/assert@~0.222.1",
+        "jsr:@std/encoding@~0.222.1"
+      ]
+    },
+    "@std/encoding@0.222.1": {
+      "integrity": "fb6c1d38722feebc8d4a5efa3eb2039ecec0d50d053186240484d0c4a4ce1006"
+    },
+    "@std/fmt@0.222.1": {
+      "integrity": "ec3382f9b0261c1ab1a5c804aa355d816515fa984cdd827ed32edfb187c0a722"
+    }
+  },
+  "npm": {
+    "postgres@3.4.7": {
+      "integrity": "sha512-Jtc2612XINuBjIl/QTWsV5UvE8UHuNblcO3vVADSrKsrc6RqGX6lOW1cEo3CM2v0XG4Nat8nI+YM7/f26VxXLw=="
+    }
+  },
+  "workspace": {
+    "dependencies": [
+      "jsr:@denorg/scrypt@4.4.4",
+      "jsr:@hono/hono@4.8.12",
+      "npm:postgres@3.4.7"
+    ]
+  }
+}

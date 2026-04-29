@@ -1,0 +1,6 @@
+CREATE TABLE communities (
+    id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name TEXT UNIQUE NOT NULL CHECK (length(name) > 0),
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
