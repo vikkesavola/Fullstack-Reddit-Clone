@@ -1,6 +1,4 @@
-import postgres from "postgres";
-
-const sql = postgres();
+import sql from "../database.js";
 
 const create = async (user) => {
   const result = await sql`

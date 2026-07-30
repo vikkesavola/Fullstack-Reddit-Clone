@@ -1,6 +1,4 @@
-import postgres from "postgres";
-
-const sql = postgres();
+import sql from "../database.js";
 
 const findAll = async (communityId) => {
   const result = await sql `SELECT * FROM posts

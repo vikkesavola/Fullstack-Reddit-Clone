@@ -2,7 +2,7 @@ import * as jwt from "@hono/hono/jwt";
 import { hash, verify } from "scrypt";
 import * as authRepository from "../repositories/authRepository.js";
 
-const JWT_SECRET = "jwt_secret";
+const JWT_SECRET = Deno.env.get("JWT_SECRET") || "jwt_secret";
 
 const register = async (c) => {
   const user = await c.req.json();

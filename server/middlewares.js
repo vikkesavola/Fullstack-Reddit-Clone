@@ -1,6 +1,6 @@
 import * as jwt from "@hono/hono/jwt";
 
-const JWT_SECRET = "jwt_secret";
+const JWT_SECRET = Deno.env.get("JWT_SECRET") || "jwt_secret";
 
 const authenticate = async (c, next) => {
   const authHeader = c.req.header("Authorization");
