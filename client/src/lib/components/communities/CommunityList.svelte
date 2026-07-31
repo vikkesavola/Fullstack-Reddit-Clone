@@ -16,7 +16,7 @@
       <a href="/communities/{community.id}" class="text-2xl inline-block anchor">{community.name}</a>
     </h2>
     <p class="text-lg">{community.description}</p>
-    {#if Number(authState.user.id) === Number(community.created_by)}
+    {#if authState.user && Number(authState.user.id) === Number(community.created_by)}
       <button onclick={() => communityState.removeCommunity(community.id)} class="my-4 btn btn-sm preset-tonal-primary">Remove</button>
     {/if}
   </li>
