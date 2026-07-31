@@ -1,0 +1,36 @@
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  email TEXT NOT NULL,
+  password_hash TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE UNIQUE INDEX ON users (lower(trim(email)));
+
+CREATE TABLE communities (
+  id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  name TEXT UNIQUE NOT NULL CHECK (length(name) > 0),
+  description TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  created_by INTEGER NOT NULL REFERENCES users(id)
+);
+
+CREATE TABLE posts (
+  id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  community_id INTEGER NOT NULL REFERENCES communities(id) ON DELETE CASCADE,
+  title TEXT,
+  content TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  parent_post_id INTEGER REFERENCES posts(id) ON DELETE CASCADE,
+  created_by INTEGER NOT NULL REFERENCES users(id)
+);
+
+CREATE TYPE vote_type AS ENUM ('upvote', 'downvote');
+
+CREATE TABLE votes (
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  post_id INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+  vote vote_type NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (user_id, post_id)
+);
