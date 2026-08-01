@@ -20,6 +20,6 @@
       <input type="text" placeholder="Post title" name="title" class="input">
     </label>
     <textarea placeholder="Post content" name="content" class="textarea"></textarea>
-    <button type="submit" class="btn preset-filled-primary-500">Add post</button>
+    <button type="submit" class="btn btn-primary">Add post</button>
   </form>
 {/if}

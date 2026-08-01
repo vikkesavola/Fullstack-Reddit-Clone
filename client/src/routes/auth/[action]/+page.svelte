@@ -41,13 +41,13 @@
 </h2>
 
 {#if message}
-  <div class="preset-tonal-success rounded-lg p-3 mb-4 max-w-md">
+  <div class="bg-green-50 border border-green-200 text-green-800 rounded-md p-3 mb-4 max-w-md">
     <p>{message}</p>
   </div>
 {/if}
 
 {#if errorMessage}
-  <div class="preset-tonal-error rounded-lg p-3 mb-4 max-w-md">
+  <div class="bg-red-50 border border-red-200 text-red-800 rounded-md p-3 mb-4 max-w-md">
     <p>{errorMessage}</p>
   </div>
 {/if}
@@ -75,7 +75,7 @@
       required
     />
   </label>
-  <button type="submit" disabled={isLoading} class="btn preset-filled-primary-500 disabled:opacity-50">
+  <button type="submit" disabled={isLoading} class="btn btn-primary">
     {isLoading
       ? "Please wait..."
       : page.params.action === "login"

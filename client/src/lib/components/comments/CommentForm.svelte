@@ -19,6 +19,6 @@
     <label class="label">
       <textarea placeholder="Comment content" name="content" class="textarea"></textarea>
     </label>
-    <button type="submit" class="btn preset-filled-primary-500">Add comment</button>
+    <button type="submit" class="btn btn-primary">Add comment</button>
   </form>
 {/if}

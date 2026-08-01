@@ -3,36 +3,25 @@
   const authState = useAuthState();
 </script>
 
-
-<header>
-  <nav class="flex bg-primary-600 p-4 gap-5 font-normal text-white">
-    {#if authState.user}
-    <div class="text-lg flex-1">
-      <span>
+<header class="bg-slate-800 text-white">
+  <nav class="container mx-auto max-w-4xl w-full flex items-center gap-6 px-4 py-3">
+    <span class="font-semibold">
+      {#if authState.user}
         Hello, {authState.user.email}!
-      </span>
-    </div>
-    <div class="ml-auto flex flex-row gap-5 text-base flex-1 justify-center items-center">
-      <a href="/" class="hover:underline">Home</a>
-      <a href="/communities" class="hover:underline">Communities</a>
-    </div>
-    <div class="flex flex-1 items-center">
-      <button onclick={() => authState.logout()} class="ml-auto justify-end hover:underline">Logout</button>
-    </div>
-    {:else}
-    <div class="text-lg flex-1">
-      <span>
+      {:else}
         Hello anonymous!
-      </span>
+      {/if}
+    </span>
+
+    <div class="ml-auto flex items-center gap-4 text-sm">
+      <a href="/" class="text-slate-200 hover:text-white">Home</a>
+      <a href="/communities" class="text-slate-200 hover:text-white">Communities</a>
+      {#if authState.user}
+        <button onclick={() => authState.logout()} class="text-slate-200 hover:text-white cursor-pointer">Logout</button>
+      {:else}
+        <a href="/auth/login" class="text-slate-200 hover:text-white">Login</a>
+        <a href="/auth/register" class="text-slate-200 hover:text-white">Register</a>
+      {/if}
     </div>
-    <div class="ml-auto flex flex-1 flex-row gap-5 text-base justify-center items-center">
-      <a href="/" class="hover:underline">Home</a>
-      <a href="/communities" class="hover:underline">Communities</a>
-    </div>
-    <ul class="flex flex-1 flex-row gap-5 ml-auto justify-end items-center">
-      <li><a href="/auth/login" class="hover:underline">Login</a></li>
-      <li><a href="/auth/register" class="hover:underline">Register</a></li>
-    </ul>
-    {/if}
   </nav>
 </header>

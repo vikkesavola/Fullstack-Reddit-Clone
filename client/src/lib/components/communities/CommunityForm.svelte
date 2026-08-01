@@ -22,6 +22,6 @@
     <label class="label">
       <textarea placeholder="Community Description" name="description" class="textarea"></textarea>
     </label>
-    <button type="submit" class="btn preset-filled-primary-500">Add Community</button>
+    <button type="submit" class="btn btn-primary">Add Community</button>
   </form>
 {/if}

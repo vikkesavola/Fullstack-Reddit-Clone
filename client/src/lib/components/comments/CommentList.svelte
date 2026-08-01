@@ -10,20 +10,20 @@
   const comments = $derived(commentState?.comments[postId] || []);
 </script>
 
-<ul class="space-y-4">
+<ul class="space-y-3">
   {#each comments as comment}
-  <li class="border border-surface-200-800 bg-white dark:bg-surface-900 shadow-sm rounded-lg p-4 space-y-3">
-    <p>{comment.content}</p>
-    <div class="flex gap-4 text-sm opacity-80">
+  <li class="card space-y-3">
+    <p class="text-gray-700">{comment.content}</p>
+    <div class="flex gap-4 text-sm text-gray-500">
       <span>Upvotes: {comment.upvotes}</span>
       <span>Downvotes: {comment.downvotes}</span>
     </div>
     {#if authState.user}
     <div class="flex flex-wrap gap-2">
-      <button onclick={() => commentState.upvoteComment(communityId, postId, comment.id)} class="btn btn-sm preset-filled-success-500">Upvote</button>
-      <button onclick={() => commentState.downvoteComment(communityId, postId, comment.id)} class="btn btn-sm preset-filled-error-500">Downvote</button>
+      <button onclick={() => commentState.upvoteComment(communityId, postId, comment.id)} class="btn btn-sm btn-success">Upvote</button>
+      <button onclick={() => commentState.downvoteComment(communityId, postId, comment.id)} class="btn btn-sm btn-secondary">Downvote</button>
       {#if Number(comment.created_by) === Number(authState.user.id)}
-      <button onclick={() => commentState.removeComment(communityId, postId, comment.id)} class="btn btn-sm preset-outlined-error-500">Remove</button>
+      <button onclick={() => commentState.removeComment(communityId, postId, comment.id)} class="btn btn-sm btn-danger">Remove</button>
       {/if}
     </div>
     {/if}

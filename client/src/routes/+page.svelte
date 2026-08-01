@@ -12,7 +12,7 @@
 <h1 class="text-3xl my-4">Welcome to the home page!</h1>
 
 {#if authState.user}
-  <a href="/communities" class="btn preset-filled-primary-500 inline-blockp-2 my-4">Go to communities</a>
+  <a href="/communities" class="btn btn-primary my-4">Go to communities</a>
 {/if}
 
 <HomePageList />
