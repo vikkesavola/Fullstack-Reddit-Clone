@@ -42,10 +42,19 @@ const getDownvotes = async (postId) => {
 }
 
 const upvote = async (userId, postId) => {
+  const existing = await sql`
+    SELECT vote FROM votes WHERE user_id = ${userId} AND post_id = ${postId}`;
+
+  // Clicking the same vote you already cast removes it (toggle off).
+  if (existing.length > 0 && existing[0].vote === "upvote") {
+    await sql`DELETE FROM votes WHERE user_id = ${userId} AND post_id = ${postId}`;
+    return null;
+  }
+
   const result = await sql `INSERT INTO votes
     (user_id, vote, post_id)
     VALUES (${userId}, 'upvote', ${postId})
-    ON CONFLICT (user_id, post_id) 
+    ON CONFLICT (user_id, post_id)
     DO UPDATE SET vote = EXCLUDED.vote
     RETURNING *;`;
 
@@ -53,10 +62,19 @@ const upvote = async (userId, postId) => {
 };
 
 const downvote = async (userId, postId) => {
+  const existing = await sql`
+    SELECT vote FROM votes WHERE user_id = ${userId} AND post_id = ${postId}`;
+
+  // Clicking the same vote you already cast removes it (toggle off).
+  if (existing.length > 0 && existing[0].vote === "downvote") {
+    await sql`DELETE FROM votes WHERE user_id = ${userId} AND post_id = ${postId}`;
+    return null;
+  }
+
   const result = await sql `INSERT INTO votes
     (user_id, vote, post_id)
     VALUES (${userId}, 'downvote', ${postId})
-    ON CONFLICT (user_id, post_id) 
+    ON CONFLICT (user_id, post_id)
     DO UPDATE SET vote = EXCLUDED.vote
     RETURNING *;`;
 
