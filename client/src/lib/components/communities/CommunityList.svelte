@@ -9,15 +9,15 @@
 
 </script>
 
-<ul>
-  {#each communityState.communities as community} 
-  <li class="bg-tertiary-200 my-8 p-5">
+<ul class="space-y-4">
+  {#each communityState.communities as community}
+  <li class="border border-surface-200-800 bg-surface-100-900 rounded-lg p-4 space-y-2">
     <h2>
-      <a href="/communities/{community.id}" class="text-2xl inline-block anchor">{community.name}</a>
+      <a href="/communities/{community.id}" class="text-2xl font-semibold inline-block anchor">{community.name}</a>
     </h2>
-    <p class="text-lg">{community.description}</p>
+    <p class="opacity-80">{community.description}</p>
     {#if authState.user && Number(authState.user.id) === Number(community.created_by)}
-      <button onclick={() => communityState.removeCommunity(community.id)} class="my-4 btn btn-sm preset-tonal-primary">Remove</button>
+      <button onclick={() => communityState.removeCommunity(community.id)} class="btn btn-sm preset-tonal-error">Remove</button>
     {/if}
   </li>
   {/each}

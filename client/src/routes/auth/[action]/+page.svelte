@@ -41,18 +41,18 @@
 </h2>
 
 {#if message}
-  <div>
+  <div class="preset-tonal-success rounded-lg p-3 mb-4 max-w-md">
     <p>{message}</p>
   </div>
 {/if}
 
 {#if errorMessage}
-  <div>
+  <div class="preset-tonal-error rounded-lg p-3 mb-4 max-w-md">
     <p>{errorMessage}</p>
   </div>
 {/if}
 
-<form onsubmit={handleForm} class="max-w-md">
+<form onsubmit={handleForm} class="max-w-md space-y-4">
   <label class="label">
     <span class="label-text">Email</span>
     <input
@@ -64,7 +64,6 @@
       required
     />
   </label>
-  <br />
   <label class="label">
     <span class="label-text">Password</span>
     <input
@@ -76,8 +75,7 @@
       required
     />
   </label>
-  <br />
-  <button type="submit" disabled={isLoading} class="btn preset-tonal-primary mb-8">
+  <button type="submit" disabled={isLoading} class="btn preset-filled-primary-500 disabled:opacity-50">
     {isLoading
       ? "Please wait..."
       : page.params.action === "login"
@@ -87,11 +85,11 @@
 </form>
 
 {#if page.params.action === "login"}
-  <p>
+  <p class="mt-6">
     Don't have an account? <a href="/auth/register" class="anchor">Register here</a>
   </p>
 {:else}
-  <p>
+  <p class="mt-6">
     Already have an account? <a href="/auth/login" class="anchor">Login here</a>
   </p>
 {/if}
