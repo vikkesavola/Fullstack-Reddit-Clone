@@ -8,5 +8,7 @@
 
 </script>
 
-<h1 class="text-3xl my-4">{post ? post.title : "Loading..."}</h1>
-<p class="text-lg">{post ? post.content : "Loading..."}</p>
+<div>
+  <h1 class="text-2xl font-bold">{post ? post.title : "Loading..."}</h1>
+  <p class="mt-2 text-gray-700">{post ? post.content : "Loading..."}</p>
+</div>

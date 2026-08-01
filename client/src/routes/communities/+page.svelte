@@ -9,7 +9,9 @@
 
 </script>
 
-<h1 class="text-3xl my-4">Communities</h1>
+<div class="space-y-6">
+  <h1 class="text-2xl font-bold">Communities</h1>
 
-<CommunityList />
-<CommunityForm />
+  <CommunityList />
+  <CommunityForm />
+</div>

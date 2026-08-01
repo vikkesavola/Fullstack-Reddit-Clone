@@ -9,10 +9,12 @@
   });
 </script>
 
-<h1 class="text-3xl my-4">Welcome to the home page!</h1>
+<div class="space-y-6">
+  <h1 class="text-2xl font-bold">Welcome to the home page!</h1>
 
-{#if authState.user}
-  <a href="/communities" class="btn btn-primary my-4">Go to communities</a>
-{/if}
+  {#if authState.user}
+    <a href="/communities" class="btn btn-primary">Go to communities</a>
+  {/if}
 
-<HomePageList />
+  <HomePageList />
+</div>

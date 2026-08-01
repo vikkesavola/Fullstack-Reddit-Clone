@@ -15,7 +15,7 @@
 </script>
 
 {#if authState.user}
-  <form onsubmit={addComment} class="space-y-4 my-8">
+  <form onsubmit={addComment} class="space-y-4 max-w-md">
     <label class="label">
       <textarea placeholder="Comment content" name="content" class="textarea"></textarea>
     </label>

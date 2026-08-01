@@ -15,7 +15,7 @@
 </script>
 
 {#if authState.user}
-  <form onsubmit={addPost} class="space-y-4 my-8 max-w-md">
+  <form onsubmit={addPost} class="space-y-4 max-w-md">
     <label class="label">
       <input type="text" placeholder="Post title" name="title" class="input">
     </label>

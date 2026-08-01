@@ -16,6 +16,8 @@
   });
 </script>
 
-<Post {communityId} {postId}/>
-<CommentForm {communityId} {postId}/>
-<CommentList {communityId} {postId}/>
+<div class="space-y-6">
+  <Post {communityId} {postId}/>
+  <CommentForm {communityId} {postId}/>
+  <CommentList {communityId} {postId}/>
+</div>

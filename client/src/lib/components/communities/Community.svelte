@@ -5,5 +5,7 @@
     let community = $derived(communityState.communities.find((c) => c.id === parseInt(communityId)));
 </script>
 
-<h1 class="text-3xl my-4">{community ? community.name : "Loading..."}</h1>
-<p class="text-lg">{community ? community.description : "Loading..."}</p>
+<div>
+  <h1 class="text-2xl font-bold">{community ? community.name : "Loading..."}</h1>
+  <p class="mt-1 text-gray-600">{community ? community.description : "Loading..."}</p>
+</div>

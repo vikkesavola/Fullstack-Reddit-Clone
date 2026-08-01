@@ -36,7 +36,7 @@
   };
 </script>
 
-<h2 class="text-3xl mb-4">
+<h2 class="text-2xl font-bold mb-6">
   {page.params.action === "login" ? "Login" : "Register"}
 </h2>
 
