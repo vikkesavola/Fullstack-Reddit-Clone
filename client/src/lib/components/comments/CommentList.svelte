@@ -13,7 +13,7 @@
 <ul class="space-y-3">
   {#each comments as comment}
   <li class="card space-y-3">
-    <p class="text-gray-700">{comment.content}</p>
+    <p class="text-gray-700 whitespace-pre-wrap break-words">{comment.content}</p>
     <div class="flex gap-4 text-sm text-gray-500">
       <span>Upvotes: {comment.upvotes}</span>
       <span>Downvotes: {comment.downvotes}</span>

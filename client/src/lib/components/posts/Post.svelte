@@ -10,5 +10,5 @@
 
 <div>
   <h1 class="text-2xl font-bold">{post ? post.title : "Loading..."}</h1>
-  <p class="mt-2 text-gray-700">{post ? post.content : "Loading..."}</p>
+  <p class="mt-2 text-gray-700 whitespace-pre-wrap break-words">{post ? post.content : "Loading..."}</p>
 </div>
