@@ -9,7 +9,7 @@
 <div class="flex flex-col h-screen bg-surface-50-950">
   <Header />
 
-  <main class="container mx-auto px-4 grow bg-white dark:bg-surface-950">
+  <main class="container mx-auto px-4 py-6 grow">
     {@render children()}
   </main>
 </div>
