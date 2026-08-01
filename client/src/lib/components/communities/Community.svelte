@@ -7,5 +7,5 @@
 
 <div>
   <h1 class="text-2xl font-bold">{community ? community.name : "Loading..."}</h1>
-  <p class="mt-1 text-gray-600">{community ? community.description : "Loading..."}</p>
+  <p class="mt-1 text-gray-600 whitespace-pre-wrap break-words">{community ? community.description : "Loading..."}</p>
 </div>

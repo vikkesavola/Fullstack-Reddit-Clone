@@ -15,7 +15,7 @@
     <h2>
       <a href="/communities/{community.id}" class="text-xl font-semibold text-gray-900 hover:underline">{community.name}</a>
     </h2>
-    <p class="text-gray-600">{community.description}</p>
+    <p class="text-gray-600 whitespace-pre-wrap break-words">{community.description}</p>
     {#if authState.user && Number(authState.user.id) === Number(community.created_by)}
       <button onclick={() => communityState.removeCommunity(community.id)} class="btn btn-sm btn-danger">Remove</button>
     {/if}
