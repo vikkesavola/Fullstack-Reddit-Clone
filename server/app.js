@@ -11,15 +11,15 @@ const app = new Hono();
 
 app.use("/*", cors());
 
-app.get("/api/homepage", postController.getHomepagePosts);
+app.get("/api/homepage", middlewares.identify, postController.getHomepagePosts);
 
 app.get("/api/communities", communityController.findAll);
 app.get("/api/communities/:communityId", communityController.findOne);
 app.post("/api/communities", middlewares.authenticate, communityController.create);
 app.delete("/api/communities/:communityId", middlewares.authenticate, communityController.deleteOne);
 
-app.get("/api/communities/:communityId/posts", postController.findAll);
-app.get("/api/communities/:communityId/posts/:postId", postController.findOne);
+app.get("/api/communities/:communityId/posts", middlewares.identify, postController.findAll);
+app.get("/api/communities/:communityId/posts/:postId", middlewares.identify, postController.findOne);
 app.post("/api/communities/:communityId/posts", middlewares.authenticate, postController.create);
 app.delete("/api/communities/:communityId/posts/:postId", middlewares.authenticate, postController.deleteOne);
 app.post("/api/communities/:communityId/posts/:postId/upvote", middlewares.authenticate, postController.upvote)

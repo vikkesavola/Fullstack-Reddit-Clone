@@ -1,5 +1,8 @@
 import { browser } from "$app/environment";
 import * as postsApi from "$lib/apis/postsApi.js";
+import { useAuthState } from "$lib/states/authState.svelte.js";
+import { goto } from "$app/navigation";
+const authState = useAuthState();
 
 let postState = $state({});
 
@@ -42,25 +45,34 @@ const usePostState = () => {
       });
     },
     upvotePost(communityId, postId) {
+      if (!authState.user) {
+        goto("/auth/login");
+        return Promise.resolve(null);
+      }
+
       const list = postState[communityId] || [];
-      const current = list.find((p) => p.id === parseInt(postId));
-      const nextVote = current?.userVote === "upvote" ? null : "upvote";
-      postsApi.upvotePost(communityId, postId).then((upvotedPost) => {
+      // The server response already carries the authoritative userVote.
+      return postsApi.upvotePost(communityId, postId).then((upvotedPost) => {
         postState[communityId] = list.map((p) =>
-          p.id === parseInt(postId) ? { ...upvotedPost, userVote: nextVote } : p
-        )
+          p.id === parseInt(postId) ? upvotedPost : p
+        );
+        return upvotedPost;
       });
     },
     downvotePost(communityId, postId) {
+      if (!authState.user) {
+        goto("/auth/login");
+        return Promise.resolve(null);
+      }
+
       const list = postState[communityId] || [];
-      const current = list.find((p) => p.id === parseInt(postId));
-      const nextVote = current?.userVote === "downvote" ? null : "downvote";
-      postsApi.downvotePost(communityId, postId).then((downvotedPost) => {
+      return postsApi.downvotePost(communityId, postId).then((downvotedPost) => {
         postState[communityId] = list.map((p) =>
-          p.id === parseInt(postId) ? { ...downvotedPost, userVote: nextVote } : p
-        )
+          p.id === parseInt(postId) ? downvotedPost : p
+        );
+        return downvotedPost;
       });
-    },
+    }
   };
 };
 

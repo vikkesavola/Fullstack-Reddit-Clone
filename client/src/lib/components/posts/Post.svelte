@@ -32,14 +32,16 @@
   <h1 class="text-2xl font-bold">{post ? post.title : "Loading..."}</h1>
   <p class="mt-2 text-gray-700 whitespace-pre-wrap wrap-break-word">{post ? post.content : "Loading..."}</p>
   <div class="flex items-center gap-3">
+    {#if post}
     <VoteControl
       score={post.upvotes - post.downvotes}
       userVote={post.userVote}
-      disabled={!authState.user}
+      disabled={false}
       onUp={() => postState.upvotePost(communityId, post.id)}
       onDown={() => postState.downvotePost(communityId, post.id)}
     />
-    {#if authState.user && Number(authState.user.id) === Number(post.created_by)}
+    {/if}
+    {#if post && authState.user && Number(authState.user.id) === Number(post.created_by)}
       <button onclick={() => onRemove()} class="btn btn-sm btn-danger">Remove</button>
     {/if}
   </div>

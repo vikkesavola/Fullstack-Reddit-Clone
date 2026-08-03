@@ -12,6 +12,11 @@ const useHomepageState = () => {
   return {
     get posts() {
       return homepageState
+    },
+    updatePost(updatedPost) {
+      homepageState = homepageState.map((p) =>
+        p.id === updatedPost.id ? updatedPost : p
+      );
     }
   };
 };

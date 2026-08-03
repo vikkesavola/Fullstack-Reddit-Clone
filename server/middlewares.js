@@ -21,4 +21,22 @@ const authenticate = async (c, next) => {
   }
 };
 
-export { authenticate };
+// For public routes that still want to personalize the response when the
+// visitor happens to be logged in (e.g. showing which way they voted).
+// Attaches the user if a valid token is present; never rejects anyone.
+const identify = async (c, next) => {
+  const authHeader = c.req.header("Authorization");
+
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    try {
+      const payload = await jwt.verify(authHeader.substring(7), JWT_SECRET);
+      c.set("user", payload);
+    } catch {
+      // Ignore a bad/expired token: the request continues as anonymous.
+    }
+  }
+
+  await next();
+};
+
+export { authenticate, identify };

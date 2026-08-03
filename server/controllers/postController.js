@@ -1,8 +1,9 @@
 import * as postRepository from "../repositories/postRepository.js";
 
 const findAll = async (c) => {
+  const user = c.get("user");
   const communityId = await c.req.param("communityId");
-  const posts = await postRepository.findAll(communityId);
+  const posts = await postRepository.findAll(communityId, user?.id ?? null);
 
   const postsWithVotes = [];
 
@@ -21,9 +22,10 @@ const findAll = async (c) => {
 };
 
 const findOne = async (c) => {
+  const user = c.get("user");
   const communityId = await c.req.param("communityId");
   const postId = await c.req.param("postId");
-  const post = await postRepository.findOne(communityId, postId);
+  const post = await postRepository.findOne(communityId, postId, user?.id ?? null);
 
   const upvotes = await postRepository.getUpvotes(postId);
   const downvotes = await postRepository.getDownvotes(postId);
@@ -67,7 +69,7 @@ const upvote = async (c) => {
   const communityId = await c.req.param("communityId");
   await postRepository.upvote(user.id, postId);
 
-  const upvotedPost = await postRepository.findOne(communityId, postId);
+  const upvotedPost = await postRepository.findOne(communityId, postId, user.id);
   const upvotes = await postRepository.getUpvotes(postId);
   const downvotes = await postRepository.getDownvotes(postId);
 
@@ -86,7 +88,7 @@ const downvote = async (c) => {
   const communityId = await c.req.param("communityId");
   await postRepository.downvote(user.id, postId);
 
-  const downvotedPost = await postRepository.findOne(communityId, postId);
+  const downvotedPost = await postRepository.findOne(communityId, postId, user.id);
   const upvotes = await postRepository.getUpvotes(postId);
   const downvotes = await postRepository.getDownvotes(postId);
 
@@ -100,7 +102,8 @@ const downvote = async (c) => {
 };
 
 const getHomepagePosts = async (c) => {
-  const homepageContent = await postRepository.getHomepagePosts();
+  const user = c.get("user");
+  const homepageContent = await postRepository.getHomepagePosts(user?.id ?? null);
   return c.json(homepageContent);
 };
 
