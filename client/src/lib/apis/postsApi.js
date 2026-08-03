@@ -1,15 +1,15 @@
 import { PUBLIC_API_URL } from "$env/static/public";
-import { authFetch } from "$lib/utils/fetchUtils";
+import { authFetch, identifiedFetch } from "$lib/utils/fetchUtils";
 
 const getPosts = async (communityId) => {
-  const response = await fetch(
+  const response = await identifiedFetch(
     `${PUBLIC_API_URL}/api/communities/${communityId}/posts`,
   );
   return await response.json();
 };
 
 const getPost = async (communityId, postId) => {
-  const response = await fetch(
+  const response = await identifiedFetch(
     `${PUBLIC_API_URL}/api/communities/${communityId}/posts/${postId}`,
   );
   return await response.json();
@@ -59,7 +59,7 @@ const downvotePost = async (communityId, postId) => {
 };
 
 const getHomepagePosts = async () => {
-  const response = await fetch(
+  const response = await identifiedFetch(
     `${PUBLIC_API_URL}/api/homepage`
   );
   return await response.json();

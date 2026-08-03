@@ -35,4 +35,18 @@ const authFetch = async (url, options = {}) => {
   return response;
 };
 
-export { authFetch };
+// For public GET routes: attaches the token when the visitor is logged in so
+// the server can personalize the response (e.g. their own vote), but works
+// perfectly well for anonymous visitors. Mirrors the server `identify` middleware.
+const identifiedFetch = async (url, options = {}) => {
+  const token = browser ? authState.token : null;
+
+  const headers = { ...options.headers };
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+
+  return await fetch(url, { ...options, headers });
+};
+
+export { authFetch, identifiedFetch };
