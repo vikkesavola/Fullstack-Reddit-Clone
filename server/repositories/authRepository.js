@@ -2,11 +2,10 @@ import sql from "../database.js";
 
 const create = async (user) => {
   const result = await sql`
-    INSERT INTO users (email, password_hash)
-    VALUES (${user.email}, ${user.password_hash})
+    INSERT INTO users (email, password_hash,  username)
+    VALUES (${user.email}, ${user.password_hash}, ${user.username})
     RETURNING id, email;
   `;
-
   return result[0];
 };
 

@@ -1,16 +1,22 @@
 import sql from "../database.js";
 
 const findAll = async (communityId) => {
-  const result = await sql `SELECT * FROM posts
-    WHERE community_id = ${communityId}
-    AND posts.parent_post_id IS NULL;`;
+  const result = await sql`
+    SELECT posts.*, users.username AS author
+    FROM posts
+    JOIN users ON users.id = posts.created_by
+    WHERE posts.community_id = ${communityId}
+      AND posts.parent_post_id IS NULL;`;
   return result;
 };
 
 const findOne = async (communityId, postId) => {
-  const result = await sql `SELECT * FROM posts
-    WHERE id = ${postId}
-    AND community_id = ${communityId};`;
+  const result = await sql`
+    SELECT posts.*, users.username AS author
+    FROM posts
+    JOIN users ON users.id = posts.created_by
+    WHERE posts.id = ${postId}
+      AND posts.community_id = ${communityId};`;
   return result[0];
 };
 
