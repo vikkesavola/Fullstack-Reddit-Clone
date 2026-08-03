@@ -12,11 +12,11 @@ import sql from "./database.js";
 const DEMO_PASSWORD = "password123";
 
 const users = [
-  { email: "demo@example.com" },
-  { email: "ada@example.com" },
-  { email: "linus@example.com" },
-  { email: "grace@example.com" },
-  { email: "alan@example.com" },
+  { email: "demo@example.com", username: "demo" },
+  { email: "ada@example.com", username: "ada" },
+  { email: "linus@example.com", username: "linus" },
+  { email: "grace@example.com", username: "grace" },
+  { email: "alan@example.com", username: "alan" },
 ];
 
 const communities = [
@@ -114,8 +114,8 @@ const passwordHash = hash(DEMO_PASSWORD);
 const userRows = [];
 for (const user of users) {
   const [row] = await sql`
-    INSERT INTO users (email, password_hash)
-    VALUES (${user.email}, ${passwordHash})
+    INSERT INTO users (email, password_hash, username)
+    VALUES (${user.email}, ${passwordHash}, ${user.username})
     RETURNING id`;
   userRows.push(row);
 }
@@ -125,6 +125,10 @@ console.log("Creating communities, posts, comments and votes...");
 let postCount = 0;
 let commentCount = 0;
 let voteCount = 0;
+// Posts are stamped a minute apart in the order they're authored, so the first
+// post ("The backbone") is the newest. Both the homepage and the community list
+// sort newest-first, so the narrative reads top-to-bottom for a first-time visitor.
+let postSeq = 0;
 
 for (const community of communities) {
   const [communityRow] = await sql`
@@ -134,10 +138,12 @@ for (const community of communities) {
 
   for (const post of community.posts) {
     const [postRow] = await sql`
-      INSERT INTO posts (community_id, title, content, created_by)
-      VALUES (${communityRow.id}, ${post.title}, ${post.content}, ${authorId})
+      INSERT INTO posts (community_id, title, content, created_by, created_at)
+      VALUES (${communityRow.id}, ${post.title}, ${post.content}, ${authorId},
+              NOW() - ${postSeq} * INTERVAL '1 minute')
       RETURNING id`;
     postCount++;
+    postSeq++;
 
     // A few upvotes from distinct users so vote counts look alive.
     const upvoters = userRows.slice(0, 2 + Math.floor(Math.random() * (userRows.length - 1)));
@@ -150,9 +156,11 @@ for (const community of communities) {
     }
 
     for (const comment of post.comments) {
+      // Cycle through the non-owner users so comment bylines vary in the demo.
+      const commentAuthor = userRows[1 + (commentCount % (userRows.length - 1))];
       await sql`
         INSERT INTO posts (community_id, content, parent_post_id, created_by)
-        VALUES (${communityRow.id}, ${comment}, ${postRow.id}, ${authorId})`;
+        VALUES (${communityRow.id}, ${comment}, ${postRow.id}, ${commentAuthor.id})`;
       commentCount++;
     }
   }

@@ -2,21 +2,26 @@ import sql from "../database.js";
 
 const findAll = async (communityId, userId) => {
   const result = await sql`
-    SELECT posts.*, users.username AS author, user_vote.vote AS "userVote"
+    SELECT posts.*, users.username AS author, communities.name AS community_name,
+           user_vote.vote AS "userVote"
     FROM posts
     JOIN users ON users.id = posts.created_by
+    JOIN communities ON communities.id = posts.community_id
     LEFT JOIN votes AS user_vote
       ON user_vote.post_id = posts.id AND user_vote.user_id = ${userId}
     WHERE posts.community_id = ${communityId}
-      AND posts.parent_post_id IS NULL;`;
+      AND posts.parent_post_id IS NULL
+    ORDER BY posts.created_at DESC;`;
   return result;
 };
 
 const findOne = async (communityId, postId, userId) => {
   const result = await sql`
-    SELECT posts.*, users.username AS author, user_vote.vote AS "userVote"
+    SELECT posts.*, users.username AS author, communities.name AS community_name,
+           user_vote.vote AS "userVote"
     FROM posts
     JOIN users ON users.id = posts.created_by
+    JOIN communities ON communities.id = posts.community_id
     LEFT JOIN votes AS user_vote
       ON user_vote.post_id = posts.id AND user_vote.user_id = ${userId}
     WHERE posts.id = ${postId}
@@ -95,11 +100,15 @@ const getHomepagePosts = async (userId) => {
   const result = await sql`
     SELECT
       posts.*,
+      users.username AS author,
+      communities.name AS community_name,
       (SELECT COUNT(*) FROM votes WHERE post_id = posts.id AND vote = 'upvote')::int AS upvotes,
       (SELECT COUNT(*) FROM votes WHERE post_id = posts.id AND vote = 'downvote')::int AS downvotes,
       (SELECT COUNT(*) FROM posts AS comments WHERE comments.parent_post_id = posts.id)::int AS comments,
       (SELECT vote FROM votes WHERE post_id = posts.id AND user_id = ${userId}) AS "userVote"
     FROM posts
+    JOIN users ON users.id = posts.created_by
+    JOIN communities ON communities.id = posts.community_id
     WHERE posts.created_at >= NOW() - INTERVAL '3 days'
       AND posts.parent_post_id IS NULL
     ORDER BY posts.created_at DESC;

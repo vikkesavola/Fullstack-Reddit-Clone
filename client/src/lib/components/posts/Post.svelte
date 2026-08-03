@@ -4,6 +4,7 @@
   import { goto } from "$app/navigation";
   let authState = useAuthState();
   import VoteControl from "$lib/components/VoteControl.svelte";
+  import PostByline from "$lib/components/posts/PostByline.svelte";
   let postState = usePostState();
   
   let { communityId, postId } = $props();
@@ -28,7 +29,9 @@
 {/if}
 
 <div class="card space-y-3">
-  <span class="text-sm font-medium text-gray-500">{post?.author}</span>
+  {#if post}
+    <PostByline author={post.author} communityId={post.community_id} communityName={post.community_name} />
+  {/if}
   <h1 class="text-2xl font-bold">{post ? post.title : "Loading..."}</h1>
   <p class="mt-2 text-gray-700 whitespace-pre-wrap wrap-break-word">{post ? post.content : "Loading..."}</p>
   <div class="flex items-center gap-3">

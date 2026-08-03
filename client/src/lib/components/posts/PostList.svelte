@@ -4,6 +4,7 @@
   import { useAuthState } from "$lib/states/authState.svelte.js";
   let authState = useAuthState();
   import VoteControl from "$lib/components/VoteControl.svelte";
+  import PostByline from "$lib/components/posts/PostByline.svelte";
 
   let { communityId } = $props();
   let communityIdInt = $derived(parseInt(communityId));
@@ -13,7 +14,7 @@
 <ul class="space-y-3">
   {#each currentPosts as post}
     <li class="card space-y-3">
-      <span class="text-sm font-medium text-gray-500">{post.author}</span>
+      <PostByline author={post.author} communityId={post.community_id} communityName={post.community_name} />
       <h2 class="text-xl font-semibold">
         <a href="/communities/{communityIdInt}/posts/{post.id}" class="text-gray-900 hover:underline">{post.title}</a>
       </h2>
