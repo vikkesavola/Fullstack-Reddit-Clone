@@ -15,7 +15,7 @@ const findOne = async (postId, commentId) => {
   FROM posts
   JOIN users ON users.id = posts.created_by
   WHERE parent_post_id = ${postId}
-    AND id = ${commentId};`;
+    AND posts.id = ${commentId};`;
   return result[0];
 };
 

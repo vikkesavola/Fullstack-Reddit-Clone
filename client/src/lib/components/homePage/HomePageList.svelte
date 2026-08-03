@@ -1,5 +1,6 @@
 <script>
   import {useHomepageState} from "$lib/states/homePageState.svelte.js";
+  import VoteControl from "$lib/components/VoteControl.svelte";
   let homepageState = useHomepageState();
 </script>
 
@@ -8,10 +9,7 @@
     <li class="card">
       <a href="/communities/{post.community_id}/posts/{post.id}" class="text-xl font-semibold text-gray-900 hover:underline">{post.title}</a>
       <p class="mt-1 mb-3 text-gray-700 whitespace-pre-wrap break-words">{post.content}</p>
-      <div class="flex gap-4 text-sm text-gray-500">
-        <span>Upvotes: {post.upvotes}</span>
-        <span>Downvotes: {post.downvotes}</span>
-      </div>
+      <VoteControl score={post.upvotes - post.downvotes} disabled={true} />
     </li>
   {/each}
 </ul>
