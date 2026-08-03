@@ -29,6 +29,7 @@ const create = async (c) => {
   
   const response = {
     ...newComment,
+    author: user.username,
     upvotes: 0,
     downvotes: 0
   }
