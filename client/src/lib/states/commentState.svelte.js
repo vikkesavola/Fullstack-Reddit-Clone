@@ -26,16 +26,22 @@ const useCommentState = () => {
       });
     },
     upvoteComment(communityId, postId, commentId) {
+      const list = commentState[postId] || [];
+      const current = list.find((c) => c.id === commentId);
+      const nextVote = current?.userVote === "upvote" ? null : "upvote";
       commentsApi.upvoteComment(communityId, postId, commentId).then((upvotedComment) => {
-        commentState[postId] = commentState[postId].map((c) =>
-          c.id === commentId ? upvotedComment : c
+        commentState[postId] = list.map((c) =>
+          c.id === commentId ? { ...upvotedComment, userVote: nextVote } : c
         )
       });
     },
     downvoteComment(communityId, postId, commentId) {
+      const list = commentState[postId] || [];
+      const current = list.find((c) => c.id === commentId);
+      const nextVote = current?.userVote === "downvote" ? null : "downvote";
       commentsApi.downvoteComment(communityId, postId, commentId).then((downvotedComment) => {
-        commentState[postId] = commentState[postId].map((c) =>
-          c.id === commentId ? downvotedComment : c
+        commentState[postId] = list.map((c) =>
+          c.id === commentId ? { ...downvotedComment, userVote: nextVote } : c
         )
       });
     },

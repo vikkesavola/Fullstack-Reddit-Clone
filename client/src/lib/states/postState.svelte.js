@@ -42,16 +42,22 @@ const usePostState = () => {
       });
     },
     upvotePost(communityId, postId) {
+      const list = postState[communityId] || [];
+      const current = list.find((p) => p.id === parseInt(postId));
+      const nextVote = current?.userVote === "upvote" ? null : "upvote";
       postsApi.upvotePost(communityId, postId).then((upvotedPost) => {
-        postState[communityId] = postState[communityId].map((p) =>
-          p.id === parseInt(postId) ? upvotedPost : p
+        postState[communityId] = list.map((p) =>
+          p.id === parseInt(postId) ? { ...upvotedPost, userVote: nextVote } : p
         )
       });
     },
     downvotePost(communityId, postId) {
+      const list = postState[communityId] || [];
+      const current = list.find((p) => p.id === parseInt(postId));
+      const nextVote = current?.userVote === "downvote" ? null : "downvote";
       postsApi.downvotePost(communityId, postId).then((downvotedPost) => {
-        postState[communityId] = postState[communityId].map((p) =>
-          p.id === parseInt(postId) ? downvotedPost : p
+        postState[communityId] = list.map((p) =>
+          p.id === parseInt(postId) ? { ...downvotedPost, userVote: nextVote } : p
         )
       });
     },

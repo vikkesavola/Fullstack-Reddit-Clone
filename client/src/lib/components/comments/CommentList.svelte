@@ -3,8 +3,8 @@
   const commentState = useCommentState();
   import { useAuthState } from "$lib/states/authState.svelte.js";
   const authState = useAuthState();
-  
-  
+  import VoteControl from "$lib/components/VoteControl.svelte";
+
   let { communityId, postId } = $props();
   
   const comments = $derived(commentState?.comments[postId] || []);
@@ -13,21 +13,20 @@
 <ul class="space-y-3">
   {#each comments as comment}
   <li class="card space-y-3">
-    <span>{comment.author}</span>
+    <span class="text-sm font-medium text-gray-500">{comment.author}</span>
     <p class="text-gray-700 whitespace-pre-wrap wrap-break-word">{comment.content}</p>
-    <div class="flex gap-4 text-sm text-gray-500">
-      <span>Upvotes: {comment.upvotes}</span>
-      <span>Downvotes: {comment.downvotes}</span>
-    </div>
-    {#if authState.user}
-    <div class="flex flex-wrap gap-2">
-      <button onclick={() => commentState.upvoteComment(communityId, postId, comment.id)} class="btn btn-sm btn-success">Upvote</button>
-      <button onclick={() => commentState.downvoteComment(communityId, postId, comment.id)} class="btn btn-sm btn-secondary">Downvote</button>
-      {#if Number(comment.created_by) === Number(authState.user.id)}
+    <div class="flex items-center gap-3">
+      <VoteControl
+        score={comment.upvotes - comment.downvotes}
+        userVote={comment.userVote}
+        disabled={!authState.user}
+        onUp={() => commentState.upvoteComment(communityId, postId, comment.id)}
+        onDown={() => commentState.downvoteComment(communityId, postId, comment.id)}
+      />
+      {#if authState.user && Number(comment.created_by) === Number(authState.user.id)}
       <button onclick={() => commentState.removeComment(communityId, postId, comment.id)} class="btn btn-sm btn-danger">Remove</button>
       {/if}
     </div>
-    {/if}
   </li>
   {/each}
 </ul>
