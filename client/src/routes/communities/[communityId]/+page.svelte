@@ -17,6 +17,6 @@
 
 <div class="space-y-6">
   <Community communityId={page.params.communityId} />
-  <PostList communityId={page.params.communityId} />
   <PostForm communityId={page.params.communityId} />
+  <PostList communityId={page.params.communityId} />
 </div>

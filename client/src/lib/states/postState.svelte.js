@@ -35,8 +35,8 @@ const usePostState = () => {
     addPost(communityId, post) {
       postsApi.addPost(communityId, post).then((newPost) => {
         const posts = postState[communityId] || [];
-        posts.push(newPost);
-        postState[communityId] = posts;
+        // Newest-first, matching the server's ORDER BY created_at DESC.
+        postState[communityId] = [newPost, ...posts];
       });
     },
     removePost(communityId, postId) {
