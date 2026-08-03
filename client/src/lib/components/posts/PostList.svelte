@@ -23,7 +23,7 @@
         <VoteControl
           score={post.upvotes - post.downvotes}
           userVote={post.userVote}
-          disabled={!authState.user}
+          disabled={false}
           onUp={() => postState.upvotePost(communityId, post.id)}
           onDown={() => postState.downvotePost(communityId, post.id)}
         />
