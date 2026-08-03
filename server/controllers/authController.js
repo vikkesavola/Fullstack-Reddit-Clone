@@ -13,9 +13,10 @@ const register = async (c) => {
       message: `Confirmation email sent to address ${newUser.email}.`
     });
   } catch (e) {
+    console.error(e);
     return c.json({
       message: `Confirmation email sent to address ${user.email}.`
-    })
+    });
   }
 };
 
@@ -30,6 +31,7 @@ const login = async (c) => {
   }
 
   const payload = {
+    username: foundUser.username,
     id: foundUser.id,
     email: foundUser.email
   };

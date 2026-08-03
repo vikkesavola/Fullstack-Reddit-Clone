@@ -16,7 +16,7 @@
     isLoading = true;
 
     const formData = new FormData(e.target);
-    const { email, password } = Object.fromEntries(formData);
+    const { username, email, password } = Object.fromEntries(formData);
 
     try {
       if (page.params.action === "login") {
@@ -24,7 +24,7 @@
         message = "Login successful! Redirecting...";
         setTimeout(() => goto("/"), 1000);
       } else {
-        await authState.register(email, password);
+        await authState.register(username, email, password);
         message = "Registration successful! You can now log in.";
         setTimeout(() => goto("/auth/login"), 2000);
       }
@@ -53,6 +53,19 @@
 {/if}
 
 <form onsubmit={handleForm} class="max-w-md space-y-4">
+  {#if page.params.action !== "login"}
+  <label class="label">
+    <span class="label-text">Username</span>
+    <input
+      id="username"
+      name="username"
+      type="text"
+      placeholder="username"
+      class="input"
+      required
+    />
+  </label>
+  {/if}
   <label class="label">
     <span class="label-text">Email</span>
     <input

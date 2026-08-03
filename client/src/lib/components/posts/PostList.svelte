@@ -12,10 +12,11 @@
 <ul class="space-y-3">
   {#each currentPosts as post}
     <li class="card space-y-3">
+      <span>{post.author}</span>
       <h2 class="text-xl font-semibold">
         <a href="/communities/{communityIdInt}/posts/{post.id}" class="text-gray-900 hover:underline">{post.title}</a>
       </h2>
-      <p class="text-gray-700 whitespace-pre-wrap break-words">{post.content}</p>
+      <p class="text-gray-700 whitespace-pre-wrap wrap-break-word">{post.content}</p>
       <div class="flex gap-4 text-sm text-gray-500">
         <span>Upvotes: {post.upvotes}</span>
         <span>Downvotes: {post.downvotes}</span>

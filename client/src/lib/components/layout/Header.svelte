@@ -7,7 +7,7 @@
   <nav class="container mx-auto max-w-4xl w-full flex items-center gap-6 px-4 py-3">
     <span class="font-semibold">
       {#if authState.user}
-        Hello, {authState.user.email}!
+        Hello, {authState.user.username}!
       {:else}
         Hello anonymous!
       {/if}

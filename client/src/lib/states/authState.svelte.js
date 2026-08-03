@@ -44,8 +44,8 @@ const useAuthState = () => {
 
       return data;
     },
-    register: async (email, password) => {
-      const response = await authApi.register({ email, password });
+    register: async (username, email, password) => {
+      const response = await authApi.register({ username, email, password });
 
       if (!response.ok) {
         const errorData = await response.json();
