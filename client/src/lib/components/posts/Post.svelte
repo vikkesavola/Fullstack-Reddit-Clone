@@ -9,7 +9,7 @@
 </script>
 
 <div>
-  <span>{post.author}</span>
+  <span>{post?.author}</span>
   <h1 class="text-2xl font-bold">{post ? post.title : "Loading..."}</h1>
   <p class="mt-2 text-gray-700 whitespace-pre-wrap wrap-break-word">{post ? post.content : "Loading..."}</p>
 </div>

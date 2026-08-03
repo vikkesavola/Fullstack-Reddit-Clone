@@ -45,6 +45,7 @@ const create = async (c) => {
 
   const response = {
     ...newPost,
+    author: user.username,
     upvotes: 0,
     downvotes: 0
   };
