@@ -45,12 +45,10 @@ const create = async (c) => {
   const post = await c.req.json();
   const newPost = await postRepository.create(user.id, communityId, post);
 
-  const response = {
-    ...newPost,
-    author: user.username,
-    upvotes: 0,
-    downvotes: 0
-  };
+  // Refetch so the new post has the same shape as the list/detail views
+  // (author, community_name, userVote). It's brand new, so counts are 0.
+  const created = await postRepository.findOne(communityId, newPost.id, user.id);
+  const response = { ...created, upvotes: 0, downvotes: 0 };
 
   return c.json(response);
 };
