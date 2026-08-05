@@ -14,9 +14,9 @@ const DEMO_PASSWORD = "password123";
 const users = [
   { email: "vikke@example.com", username: "Vikke" },
   { email: "demo@example.com", username: "Demo" },
-  { email: "linus@example.com", username: "linus" },
-  { email: "grace@example.com", username: "grace" },
-  { email: "alan@example.com", username: "alan" },
+  { email: "random@example.com", username: "Random" },
+  { email: "someone@example.com", username: "Someone" },
+  { email: "anonymous@example.com", username: "Anonymous" },
 ];
 
 const communities = [
@@ -32,20 +32,18 @@ const communities = [
           "It's all seed data, but the site is real. Register or use the demo login and try it.\n\n" +
           "The posts below are the quick tour: the stack, how it's built, how it's hosted, and what I got out of it.",
         comments: [
-          "Worth knowing: this comment is a row in the same table as the posts. A comment is just a post with a parent. More on that in the build post.",
+          { text: "Worth knowing: this comment is a row in the same table as the posts. A comment is just a post with a parent. More on that in the build post.", author: "Vikke" },
         ],
       },
       {
         title: "The stack",
         content:
-          "The short version:\n\n" +
           "Frontend: SvelteKit (Svelte 5) as a single-page app, Tailwind v4 for styling. Reactivity uses Svelte's runes.\n" +
           "Backend: a REST API in Deno with Hono. Passwords hashed with scrypt, sessions are signed JWTs.\n" +
           "Database: PostgreSQL through postgres.js, schema changes versioned with Flyway.\n" +
           "Tests: end-to-end with Playwright, light coverage, mostly to learn how E2E works.\n" +
           "Local dev: docker compose up boots the whole thing.",
         comments: [
-          "Deno was the new one for me. It runs TypeScript directly and pulls dependencies from an import map, so there is no node_modules folder.",
         ],
       },
       {
@@ -55,12 +53,10 @@ const communities = [
           "1. SvelteKit client: the pages you're on. It fetches everything from the API.\n" +
           "2. Hono API: login, plus reading and writing communities, posts, comments, and votes.\n" +
           "3. PostgreSQL: stores all of it.\n\n" +
-          "Two design bits I like:\n\n" +
           "Comments are posts. A comment is a row in the posts table with a parent_post_id pointing at its parent. One table, referencing itself.\n\n" +
-          "One vote per person per item. A vote is a row in a votes table keyed by (user_id, post_id), so the database enforces it.\n\n" +
           "Auth is stateless: log in, get a signed token, send it with each request. The server checks the signature and keeps no session of its own.",
         comments: [
-          "Keeping posts and comments in one table means a post and a comment are the same shape underneath, which kept the code smaller.",
+          { text: "Keeping posts and comments in one table means a post and a comment are the same underneath, which kept the code smaller.", author: "Vikke" },
         ],
       },
       {
@@ -79,7 +75,7 @@ const communities = [
           "The main things this taught me:\n\n" +
           "- Following one click the whole way: browser to API to database and back.\n" +
           "- Designing a REST API and a relational schema.\n" +
-          "- Real authentication: password hashing, JWTs, protected routes.\n" +
+          "- Authentication: password hashing, JWTs, protected routes.\n" +
           "- Taking SQL seriously, since a lot of the logic lives in the queries.\n" +
           "- Debugging in production: an empty-state crash, an API response shaped wrong, and a few display bugs.\n\n" +
           "That's the tour. Have a look around and vote however you want.",
@@ -117,6 +113,16 @@ for (const user of users) {
 }
 const authorId = userRows[0].id;
 
+// Recruiters log in as the demo account, so it should start untouched: no
+// pre-cast votes. Keep it out of the seeded voter pool.
+const demoId = userRows[users.findIndex((u) => u.email === "demo@example.com")].id;
+const voterPool = userRows.filter((row) => row.id !== demoId);
+
+// Map usernames to ids so a comment can name its own author (e.g. Vikke's asides).
+const idByUsername = new Map(userRows.map((row, i) => [users[i].username, row.id]));
+// Comments without a named author cycle through the other members (not owner or demo).
+const commenterPool = userRows.filter((row) => row.id !== authorId && row.id !== demoId);
+
 console.log("Creating communities, posts, comments and votes...");
 let postCount = 0;
 let commentCount = 0;
@@ -140,8 +146,8 @@ for (const community of communities) {
     postCount++;
     postSeq++;
 
-    // A few upvotes from other users
-    const upvoters = userRows.slice(0, 2 + Math.floor(Math.random() * (userRows.length - 1)));
+    // A few upvotes from other users (excluding demo account)
+    const upvoters = voterPool.slice(0, 2 + Math.floor(Math.random() * (voterPool.length - 1)));
     for (const voter of upvoters) {
       await sql`
         INSERT INTO votes (user_id, post_id, vote)
@@ -151,11 +157,13 @@ for (const community of communities) {
     }
 
     for (const comment of post.comments) {
-      // Cycle through the non-owner users
-      const commentAuthor = userRows[1 + (commentCount % (userRows.length - 1))];
+      // Named author (e.g. Vikke) is used as-is; unnamed comments cycle members.
+      const commentAuthorId = comment.author
+        ? idByUsername.get(comment.author)
+        : commenterPool[commentCount % commenterPool.length].id;
       await sql`
         INSERT INTO posts (community_id, content, parent_post_id, created_by)
-        VALUES (${communityRow.id}, ${comment}, ${postRow.id}, ${commentAuthor.id})`;
+        VALUES (${communityRow.id}, ${comment.text}, ${postRow.id}, ${commentAuthorId})`;
       commentCount++;
     }
   }
