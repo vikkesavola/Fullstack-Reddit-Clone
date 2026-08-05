@@ -5,20 +5,7 @@ const findAll = async (c) => {
   const communityId = await c.req.param("communityId");
   const posts = await postRepository.findAll(communityId, user?.id ?? null);
 
-  const postsWithVotes = [];
-
-  for (const post of posts) {
-    const upvotes = await postRepository.getUpvotes(post.id);
-    const downvotes = await postRepository.getDownvotes(post.id);
-
-    postsWithVotes.push({
-      ...post,
-      upvotes: upvotes,
-      downvotes: downvotes
-    });
-  }
-
-  return c.json(postsWithVotes);
+  return c.json(posts);
 };
 
 const findOne = async (c) => {
@@ -27,16 +14,7 @@ const findOne = async (c) => {
   const postId = await c.req.param("postId");
   const post = await postRepository.findOne(communityId, postId, user?.id ?? null);
 
-  const upvotes = await postRepository.getUpvotes(postId);
-  const downvotes = await postRepository.getDownvotes(postId);
-
-  const response = {
-    ...post,
-    upvotes: upvotes,
-    downvotes: downvotes
-  }
-
-  return c.json(response);
+  return c.json(post);
 };
 
 const create = async (c) => {
@@ -68,14 +46,6 @@ const upvote = async (c) => {
   await postRepository.upvote(user.id, postId);
 
   const upvotedPost = await postRepository.findOne(communityId, postId, user.id);
-  const upvotes = await postRepository.getUpvotes(postId);
-  const downvotes = await postRepository.getDownvotes(postId);
-
-  const response = {
-    ...upvotedPost,
-    upvotes: upvotes,
-    downvotes: downvotes
-  }
 
   return c.json(response);
 };
@@ -87,14 +57,6 @@ const downvote = async (c) => {
   await postRepository.downvote(user.id, postId);
 
   const downvotedPost = await postRepository.findOne(communityId, postId, user.id);
-  const upvotes = await postRepository.getUpvotes(postId);
-  const downvotes = await postRepository.getDownvotes(postId);
-
-  const response = {
-    ...downvotedPost,
-    upvotes: upvotes,
-    downvotes: downvotes
-  }
 
   return c.json(response);
 };

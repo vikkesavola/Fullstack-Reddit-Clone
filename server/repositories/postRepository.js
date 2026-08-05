@@ -2,8 +2,13 @@ import sql from "../database.js";
 
 const findAll = async (communityId, userId) => {
   const result = await sql`
-    SELECT posts.*, users.username AS author, communities.name AS community_name,
-           user_vote.vote AS "userVote"
+    SELECT 
+      posts.*, 
+      users.username AS author, 
+      communities.name AS community_name,
+      user_vote.vote AS "userVote",
+      (SELECT COUNT(*) FROM votes WHERE post_id = posts.id AND vote = 'upvote')::int AS upvotes,
+      (SELECT COUNT(*) FROM votes WHERE post_id = posts.id AND vote = 'downvote')::int AS downvotes
     FROM posts
     JOIN users ON users.id = posts.created_by
     JOIN communities ON communities.id = posts.community_id
@@ -17,8 +22,12 @@ const findAll = async (communityId, userId) => {
 
 const findOne = async (communityId, postId, userId) => {
   const result = await sql`
-    SELECT posts.*, users.username AS author, communities.name AS community_name,
-           user_vote.vote AS "userVote"
+    SELECT posts.*, 
+      users.username AS author, 
+      communities.name AS community_name,
+      user_vote.vote AS "userVote",
+      (SELECT COUNT(*) FROM votes WHERE post_id = posts.id AND vote = 'upvote')::int AS upvotes,
+      (SELECT COUNT(*) FROM votes WHERE post_id = posts.id AND vote = 'downvote')::int AS downvotes
     FROM posts
     JOIN users ON users.id = posts.created_by
     JOIN communities ON communities.id = posts.community_id
@@ -45,16 +54,6 @@ const deleteOne = async (userId, communityId, postId) => {
     RETURNING *;`;
   return result[0];
 };
-
-const getUpvotes = async (postId) => {
-  const result = await sql`SELECT count(*) FROM votes WHERE post_id = ${postId} AND vote = 'upvote'`;
-  return Number(result[0].count)
-}
-
-const getDownvotes = async (postId) => {
-  const result = await sql`SELECT count(*) FROM votes WHERE post_id = ${postId} AND vote = 'downvote'`;
-  return Number(result[0].count)
-}
 
 const upvote = async (userId, postId) => {
   const existing = await sql`
@@ -116,4 +115,4 @@ const getHomepagePosts = async (userId) => {
   return result;
 };
 
-export { findAll, findOne, create, deleteOne, getUpvotes, getDownvotes, upvote, downvote, getHomepagePosts };
+export { findAll, findOne, create, deleteOne, upvote, downvote, getHomepagePosts };
