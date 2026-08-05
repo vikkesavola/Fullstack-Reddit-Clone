@@ -55,6 +55,5 @@
     </button>
   {/if}
 
-  <h2 class="text-xl font-bold">Recent posts</h2>
   <HomePageList />
 </div>

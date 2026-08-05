@@ -19,6 +19,5 @@
 <div class="space-y-6">
   <Post {communityId} {postId}/>
   <CommentForm {communityId} {postId}/>
-  <h2 class="text-xl font-bold">Comments</h2>
   <CommentList {communityId} {postId}/>
 </div>
