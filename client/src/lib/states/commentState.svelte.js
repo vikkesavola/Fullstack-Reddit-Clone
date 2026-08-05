@@ -16,8 +16,8 @@ const useCommentState = () => {
     addComment(communityId, postId, comment) {
       commentsApi.addComment(communityId, postId, comment).then((newComment) => {
         const comments = commentState[postId] || [];
-        comments.push(newComment);
-        commentState[postId] = comments;
+        // Newest-first, matching the server's ORDER BY created_at DESC.
+        commentState[postId] = [newComment, ...comments];
       });
     },
     removeComment(communityId, postId, commentId) {

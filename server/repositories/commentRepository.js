@@ -8,7 +8,8 @@ const findAll = async (postId) => {
       (SELECT COUNT(*) FROM votes WHERE post_id = posts.id AND vote = 'downvote')::int AS downvotes
     FROM posts
     JOIN users ON users.id = posts.created_by
-    WHERE parent_post_id = ${postId};`;
+    WHERE parent_post_id = ${postId}
+    ORDER BY posts.created_at DESC;`;
   return result;
 };
 
