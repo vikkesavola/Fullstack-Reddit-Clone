@@ -2,7 +2,10 @@ import sql from "../database.js";
 
 const findAll = async (postId) => {
   const result = await sql `
-    SELECT posts.*, users.username AS author
+    SELECT posts.*, 
+      users.username AS author,
+      (SELECT COUNT(*) FROM votes WHERE post_id = posts.id AND vote = 'upvote')::int AS upvotes,
+      (SELECT COUNT(*) FROM votes WHERE post_id = posts.id AND vote = 'downvote')::int AS downvotes
     FROM posts
     JOIN users ON users.id = posts.created_by
     WHERE parent_post_id = ${postId};`;
@@ -11,7 +14,10 @@ const findAll = async (postId) => {
 
 const findOne = async (postId, commentId) => {
   const result = await sql `
-  SELECT posts.*, users.username AS author
+  SELECT posts.*, 
+    users.username AS author,
+    (SELECT COUNT(*) FROM votes WHERE post_id = posts.id AND vote = 'upvote')::int AS upvotes,
+    (SELECT COUNT(*) FROM votes WHERE post_id = posts.id AND vote = 'downvote')::int AS downvotes
   FROM posts
   JOIN users ON users.id = posts.created_by
   WHERE parent_post_id = ${postId}
@@ -36,16 +42,6 @@ const deleteOne = async (userId, communityId, postId, commentId) => {
     RETURNING *;`;
   return result[0];
 };
-
-const getUpvotes = async (commentId) => {
-  const result = await sql`SELECT count(*) FROM votes WHERE post_id = ${commentId} AND vote = 'upvote'`;
-  return Number(result[0].count)
-}
-
-const getDownvotes = async (commentId) => {
-  const result = await sql`SELECT count(*) FROM votes WHERE post_id = ${commentId} AND vote = 'downvote'`;
-  return Number(result[0].count)
-}
 
 const upvote = async (userId, postId) => {
   const existing = await sql`
@@ -88,4 +84,4 @@ const downvote = async (userId, postId) => {
 };
 
 
-export { findAll, findOne, create, deleteOne, getUpvotes, getDownvotes, upvote, downvote }
+export { findAll, findOne, create, deleteOne, upvote, downvote }
