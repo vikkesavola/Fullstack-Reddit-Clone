@@ -10,6 +10,10 @@
   const comments = $derived(commentState?.comments[postId] || []);
 </script>
 
+<h2 class="text-xl font-bold">
+  {comments.length > 0 ? "Comments" : "No comments yet"}
+</h2>
+
 <ul class="space-y-3">
   {#each comments as comment}
   <li class="card space-y-3">
