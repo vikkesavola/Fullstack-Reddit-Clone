@@ -4,20 +4,7 @@ const findAll = async (c) => {
   const postId = c.req.param("postId");
   const comments = await commentRepository.findAll(postId);
 
-  const commentsWithVotes = [];
-
-  for (const comment of comments) {
-    const upvotes = await commentRepository.getUpvotes(comment.id);
-    const downvotes = await commentRepository.getDownvotes(comment.id);
-
-    commentsWithVotes.push({
-      ...comment,
-      upvotes: upvotes,
-      downvotes: downvotes
-    });
-  }
-
-  return c.json(commentsWithVotes);
+  return c.json(comments);
 };
 
 const create = async (c) => {
@@ -31,8 +18,8 @@ const create = async (c) => {
     ...newComment,
     author: user.username,
     upvotes: 0,
-    downvotes: 0
-  }
+    downvotes: 0,
+  };
 
   return c.json(response);
 };
@@ -54,16 +41,8 @@ const upvote = async (c) => {
   await commentRepository.upvote(user.id, commentId);
 
   const upvotedComment = await commentRepository.findOne(postId, commentId);
-  const upvotes = await commentRepository.getUpvotes(commentId);
-  const downvotes = await commentRepository.getDownvotes(commentId);
 
-  const response = {
-    ...upvotedComment,
-    upvotes: upvotes,
-    downvotes: downvotes
-  }
-
-  return c.json(response);
+  return c.json(upvotedComment);
 };
 
 const downvote = async (c) => {
@@ -74,16 +53,8 @@ const downvote = async (c) => {
   await commentRepository.downvote(user.id, commentId);
 
   const downvotedComment = await commentRepository.findOne(postId, commentId);
-  const upvotes = await commentRepository.getUpvotes(commentId);
-  const downvotes = await commentRepository.getDownvotes(commentId);
 
-  const response = {
-    ...downvotedComment,
-    upvotes: upvotes,
-    downvotes: downvotes
-  }
-
-  return c.json(response);
+  return c.json(downvotedComment);
 };
 
 export { findAll, create, deleteOne, upvote, downvote };
