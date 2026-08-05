@@ -7,11 +7,14 @@
   let postState = usePostState();
 
   let postList = $derived(homepageState.posts);
+  let isLoading = $derived(homepageState.loading);
 </script>
 
-<h2 class="text-xl font-bold">
-  {postList.length > 0 ? "Recent posts" : "No posts yet"}
-</h2>
+{#if !isLoading}
+  <h2 class="text-xl font-bold">
+    {postList.length > 0 ? "Recent posts" : "No posts yet"}
+  </h2>
+{/if}
 
 <ul class="space-y-3">
   {#each postList as post}
