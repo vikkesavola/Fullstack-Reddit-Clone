@@ -4,7 +4,7 @@
 //   cd server
 //   DATABASE_URL="(password)" deno run --allow-env --allow-net seed.js
 
-// For local Docker: deno run --allow-env --allow-net seed.js
+// For local Docker: docker compose exec server deno run --allow-env --allow-net seed.js
 
 import { hash } from "scrypt";
 import sql from "./database.js";

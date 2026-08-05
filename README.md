@@ -2,10 +2,9 @@
 
 A full-stack Reddit-style forum where users create communities, post, comment in threads, and vote. A SvelteKit frontend talks to a Deno REST API backed by PostgreSQL.
 
-**Live demo:** https://<your-cloudflare-pages-url>
-**Demo login:** `demo@example.com` / `password123`
+**Live demo:** https://fullstack-reddit-clone-794.pages.dev/
 
-![Screenshot of the app](docs/screenshot.png)
+![Screenshot of the app](docs/post.png)
 
 ## Background
 
