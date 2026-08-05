@@ -47,7 +47,7 @@ const upvote = async (c) => {
 
   const upvotedPost = await postRepository.findOne(communityId, postId, user.id);
 
-  return c.json(response);
+  return c.json(upvotedPost);
 };
 
 const downvote = async (c) => {
@@ -58,7 +58,7 @@ const downvote = async (c) => {
 
   const downvotedPost = await postRepository.findOne(communityId, postId, user.id);
 
-  return c.json(response);
+  return c.json(downvotedPost);
 };
 
 const getHomepagePosts = async (c) => {
