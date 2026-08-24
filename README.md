@@ -67,7 +67,7 @@ That starts the frontend on `http://localhost:5173`, the API on `http://localhos
 To fill the database with demo content (communities, posts, comments, votes, and a demo user), run the seed script inside the server container:
 
 ```bash
-docker compose exec server deno run --allow-env --allow-net seed.js
+docker compose exec server deno run --allow-env --allow-net seed.ts
 ```
 
 ## Testing
@@ -85,7 +85,7 @@ client/               SvelteKit single-page frontend
 server/               Deno + Hono REST API
   controllers/        request handling
   repositories/       database queries
-  seed.js             demo data
+  seed.ts             demo data
 database-migrations/  Flyway SQL migrations (V1..V9)
 e2e-tests/            Playwright tests
 compose.yaml          local dev: client, API, postgres, migrations

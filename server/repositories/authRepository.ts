@@ -1,6 +1,12 @@
-import sql from "../database.js";
+import sql from "../database.ts";
 
-const create = async (user) => {
+interface User {
+  username: string,
+  email: string,
+  password_hash: string
+}
+
+const create = async (user: User) => {
   const result = await sql`
     INSERT INTO users (email, password_hash,  username)
     VALUES (${user.email}, ${user.password_hash}, ${user.username})
@@ -9,7 +15,7 @@ const create = async (user) => {
   return result[0];
 };
 
-const findByEmail = async (email) => {
+const findByEmail = async (email: string) => {
   const result = await sql`
     SELECT * FROM users
       WHERE lower(trim(email)) = lower(trim(${email}))

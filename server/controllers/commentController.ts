@@ -1,13 +1,14 @@
-import * as commentRepository from "../repositories/commentRepository.js";
+import type { Context } from "@hono/hono";
+import * as commentRepository from "../repositories/commentRepository.ts";
 
-const findAll = async (c) => {
+const findAll = async (c: Context) => {
   const postId = c.req.param("postId");
   const comments = await commentRepository.findAll(postId);
 
   return c.json(comments);
 };
 
-const create = async (c) => {
+const create = async (c: Context) => {
   const user = c.get("user");
   const communityId = c.req.param("communityId");
   const postId = c.req.param("postId");
@@ -24,7 +25,7 @@ const create = async (c) => {
   return c.json(response);
 };
 
-const deleteOne = async (c) => {
+const deleteOne = async (c: Context) => {
   const user = c.get("user");
   const communityId = c.req.param("communityId");
   const postId = c.req.param("postId");
@@ -33,10 +34,9 @@ const deleteOne = async (c) => {
   return c.json(deletedComment);
 };
 
-const upvote = async (c) => {
+const upvote = async (c: Context) => {
   const user = c.get("user");
-  const communityId = await c.req.param("communityId");
-  const postId = await c.req.param("postId");
+  const postId = c.req.param("postId");
   const commentId = c.req.param("commentId");
   await commentRepository.upvote(user.id, commentId);
 
@@ -45,9 +45,8 @@ const upvote = async (c) => {
   return c.json(upvotedComment);
 };
 
-const downvote = async (c) => {
+const downvote = async (c: Context) => {
   const user = c.get("user");
-  const communityId = await c.req.param("communityId");
   const postId = await c.req.param("postId");
   const commentId = c.req.param("commentId");
   await commentRepository.downvote(user.id, commentId);

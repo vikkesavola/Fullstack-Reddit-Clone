@@ -1,11 +1,12 @@
 import { Hono } from "@hono/hono";
+import type { Context } from "@hono/hono";
 import { cors } from "@hono/hono/cors";
 
-import * as communityController from "./controllers/communityController.js";
-import * as postController from "./controllers/postController.js";
-import * as commentController from "./controllers/commentController.js";
-import * as authController from "./controllers/authController.js";
-import * as middlewares from "./middlewares.js";
+import * as communityController from "./controllers/communityController.ts";
+import * as postController from "./controllers/postController.ts";
+import * as commentController from "./controllers/commentController.ts";
+import * as authController from "./controllers/authController.ts";
+import * as middlewares from "./middlewares.ts";
 
 const app = new Hono();
 

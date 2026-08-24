@@ -1,10 +1,11 @@
+import type { Context } from "@hono/hono";
 import * as jwt from "@hono/hono/jwt";
 import { hash, verify } from "scrypt";
-import * as authRepository from "../repositories/authRepository.js";
+import * as authRepository from "../repositories/authRepository.ts";
 
 const JWT_SECRET = Deno.env.get("JWT_SECRET") || "jwt_secret";
 
-const register = async (c) => {
+const register = async (c: Context) => {
   const user = await c.req.json();
   try {
     user.password_hash = hash(user.password);
@@ -20,7 +21,7 @@ const register = async (c) => {
   }
 };
 
-const login = async (c) => {
+const login = async (c: Context) => {
   const user = await c.req.json();
   const foundUser = await authRepository.findByEmail(user.email);
   if (!foundUser) return c.json({ message: "Incorrect email or password." }, 401);

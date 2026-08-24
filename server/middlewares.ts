@@ -1,8 +1,10 @@
 import * as jwt from "@hono/hono/jwt";
+import type { Context, Next } from "@hono/hono";
+
 
 const JWT_SECRET = Deno.env.get("JWT_SECRET") || "jwt_secret";
 
-const authenticate = async (c, next) => {
+const authenticate = async (c: Context, next: Next) => {
   const authHeader = c.req.header("Authorization");
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -24,7 +26,7 @@ const authenticate = async (c, next) => {
 // For public routes that still want to personalize the response when the
 // visitor happens to be logged in (e.g. showing which way they voted).
 // Attaches the user if a valid token is present; never rejects anyone.
-const identify = async (c, next) => {
+const identify = async (c: Context, next: Next) => {
   const authHeader = c.req.header("Authorization");
 
   if (authHeader && authHeader.startsWith("Bearer ")) {

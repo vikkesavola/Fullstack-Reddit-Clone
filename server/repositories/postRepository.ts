@@ -1,7 +1,33 @@
-import sql from "../database.js";
+import sql from "../database.ts";
 
-const findAll = async (communityId, userId) => {
-  const result = await sql`
+// The posts table (both posts and comments)
+interface PostRow {
+  id: number;
+  community_id: number;
+  parent_post_id: number | null;   // null for posts
+  created_by: number;
+  title: string | null;            // null for comments
+  content: string;
+  created_at: Date;
+}
+
+interface PostView extends PostRow {
+  author: string;
+  community_name: string;
+  userVote: "upvote" | "downvote" | null;
+  upvotes: number;
+  downvotes: number;
+}
+
+interface Vote {
+  user_id: number;
+  post_id: number;
+  vote: "upvote" | "downvote";
+  created_at: Date;
+}
+
+const findAll = async (communityId: number, userId: number | null): Promise<PostView[]> => {
+  const result = await sql<PostView[]>`
     SELECT 
       posts.*, 
       users.username AS author, 
@@ -20,8 +46,8 @@ const findAll = async (communityId, userId) => {
   return result;
 };
 
-const findOne = async (communityId, postId, userId) => {
-  const result = await sql`
+const findOne = async (communityId: number, postId: number, userId: number | null): Promise<PostView | undefined> => {
+  const result = await sql<PostView[]>`
     SELECT posts.*, 
       users.username AS author, 
       communities.name AS community_name,
@@ -38,16 +64,16 @@ const findOne = async (communityId, postId, userId) => {
   return result[0];
 };
 
-const create = async (userId, communityId, post) => {
-  const result = await sql `INSERT INTO posts
+const create = async (userId: number, communityId: number, post: Pick<PostRow, "title" | "content">): Promise<PostRow> => {
+  const result = await sql<PostRow[]>`INSERT INTO posts
     (community_id, title, content, created_by)
     VALUES (${communityId}, ${post.title}, ${post.content}, ${userId})
     RETURNING *;`;
   return result[0];
 };
 
-const deleteOne = async (userId, communityId, postId) => {
-  const result = await sql `DELETE FROM posts
+const deleteOne = async (userId: number, communityId: number, postId: number): Promise<PostRow | undefined> => {
+  const result = await sql<PostRow[]>`DELETE FROM posts
     WHERE community_id = ${communityId} 
       AND id = ${postId} 
       AND created_by = ${userId}
@@ -55,17 +81,17 @@ const deleteOne = async (userId, communityId, postId) => {
   return result[0];
 };
 
-const upvote = async (userId, postId) => {
-  const existing = await sql`
+const upvote = async (userId: number, postId: number): Promise<Vote | null> => {
+  const existing = await sql<Pick<Vote, "vote">[]>`
     SELECT vote FROM votes WHERE user_id = ${userId} AND post_id = ${postId}`;
 
-  // Clicking the same vote you already cast removes it (toggle off).
+  // Vote toggle off
   if (existing.length > 0 && existing[0].vote === "upvote") {
     await sql`DELETE FROM votes WHERE user_id = ${userId} AND post_id = ${postId}`;
     return null;
   }
 
-  const result = await sql `INSERT INTO votes
+  const result = await sql<Vote[]>`INSERT INTO votes
     (user_id, vote, post_id)
     VALUES (${userId}, 'upvote', ${postId})
     ON CONFLICT (user_id, post_id)
@@ -75,17 +101,17 @@ const upvote = async (userId, postId) => {
   return result[0];
 };
 
-const downvote = async (userId, postId) => {
-  const existing = await sql`
+const downvote = async (userId: number, postId: number): Promise<Vote | null> => {
+  const existing = await sql<Pick<Vote, "vote">[]>`
     SELECT vote FROM votes WHERE user_id = ${userId} AND post_id = ${postId}`;
 
-  // Clicking the same vote you already cast removes it (toggle off).
+  // Vote toggle off
   if (existing.length > 0 && existing[0].vote === "downvote") {
     await sql`DELETE FROM votes WHERE user_id = ${userId} AND post_id = ${postId}`;
     return null;
   }
 
-  const result = await sql `INSERT INTO votes
+  const result = await sql<Vote[]>`INSERT INTO votes
     (user_id, vote, post_id)
     VALUES (${userId}, 'downvote', ${postId})
     ON CONFLICT (user_id, post_id)
@@ -95,8 +121,10 @@ const downvote = async (userId, postId) => {
   return result[0];
 };
 
-const getHomepagePosts = async (userId) => {
-  const result = await sql`
+interface HomepagePost extends PostView { comments: number; }
+
+const getHomepagePosts = async (userId: number | null): Promise<HomepagePost[]> => {
+  const result = await sql<HomepagePost[]>`
     SELECT
       posts.*,
       users.username AS author,
