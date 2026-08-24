@@ -136,8 +136,8 @@ const getHomepagePosts = async (userId: number | null): Promise<HomepagePost[]> 
     FROM posts
     JOIN users ON users.id = posts.created_by
     JOIN communities ON communities.id = posts.community_id
-    WHERE posts.created_at >= NOW() - INTERVAL '3 days'
-      AND posts.parent_post_id IS NULL
+    -- no time window: demo data shouldn't age off the homepage
+    WHERE posts.parent_post_id IS NULL
     ORDER BY posts.created_at DESC;
   `;
   return result;
