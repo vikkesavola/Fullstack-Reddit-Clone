@@ -27,36 +27,36 @@ const communities = [
       {
         title: "What this is",
         content:
-          "A full-stack Reddit clone. I built it for a web dev course in spring 2026, then kept going until it actually held together and went online.\n\n" +
+          "A full-stack Reddit clone. I built it for a web dev course in spring 2026 and then kept going to make it actually work.\n\n" +
           "What you can do here: make communities, post, comment, and vote things up or down.\n\n" +
-          "It's all seed data, but the site is real. Register or use the demo login and try it.\n\n" +
-          "The posts below are the quick tour: the stack, how it's built, how it's hosted, and what I got out of it.",
+          "Register or use the demo login and try it.\n\n" +
+          "The posts below give you a quick tour about the stack, how it's built, how it's hosted, and what I learned.",
         comments: [
-          { text: "Worth knowing: this comment is a row in the same table as the posts. A comment is just a post with a parent. More on that in the build post.", author: "Vikke" },
+          { text: "Welcome!", author: "Vikke" },
         ],
       },
       {
         title: "The stack",
         content:
-          "Frontend: SvelteKit (Svelte 5) as a single-page app, Tailwind v4 for styling. Reactivity uses Svelte's runes.\n" +
-          "Backend: a REST API in Deno with Hono. Passwords hashed with scrypt, sessions are signed JWTs.\n" +
+          "Frontend: SvelteKit as a single-page app, Tailwind for styling.\n" +
+          "Backend: a REST API in Deno with Hono. Passwords are hashed with scrypt, and sessions are signed JWTs.\n" +
           "Database: PostgreSQL through postgres.js, schema changes versioned with Flyway.\n" +
-          "Tests: end-to-end with Playwright, light coverage, mostly to learn how E2E works.\n" +
-          "Local dev: docker compose up boots the whole thing.",
+          "Tests: end-to-end with Playwright, very light coverage, mostly to learn how E2E works.\n" +
+          "Local dev: docker compose.",
         comments: [
         ],
       },
       {
         title: "How it's built",
         content:
-          "Three services talking to each other:\n\n" +
-          "1. SvelteKit client: the pages you're on. It fetches everything from the API.\n" +
+          "Three services:\n\n" +
+          "1. SvelteKit client: the web pages. It fetches everything from the API.\n" +
           "2. Hono API: login, plus reading and writing communities, posts, comments, and votes.\n" +
-          "3. PostgreSQL: stores all of it.\n\n" +
-          "Comments are posts. A comment is a row in the posts table with a parent_post_id pointing at its parent. One table, referencing itself.\n\n" +
-          "Auth is stateless: log in, get a signed token, send it with each request. The server checks the signature and keeps no session of its own.",
+          "3. PostgreSQL: stores everything.\n\n" +
+          "Comments are posts. A comment is a row in the posts table with a parent_post_id pointing at its parent.\n\n" +
+          "Auth is stateless: log in, get a signed token, send it with each request. The server checks the signature.",
         comments: [
-          { text: "Keeping posts and comments in one table means a post and a comment are the same underneath, which kept the code smaller.", author: "Vikke" },
+          { text: "Keeping posts and comments in one table means a post and a comment are the same, which kept the code smaller.", author: "Vikke" },
         ],
       },
       {
@@ -74,7 +74,7 @@ const communities = [
         content:
           "The main things this taught me:\n\n" +
           "- Following one click the whole way: browser to API to database and back.\n" +
-          "- Designing a REST API and a relational schema.\n" +
+          "- Seeing how a REST API and a relational schema fit together.\n" +
           "- Authentication: password hashing, JWTs, protected routes.\n" +
           "- Taking SQL seriously, since a lot of the logic lives in the queries.\n" +
           "- Debugging in production: an empty-state crash, an API response shaped wrong, and a few display bugs.\n\n" +
@@ -90,18 +90,16 @@ const communities = [
       {
         title: "Leave feedback here",
         content:
-          "It's a portfolio project, so I actually want to know what could be better. Register and drop a post, and it shows up right here.\n\n" +
-          "Heads up: the demo data resets when the site is reseeded, so posts may disappear later.",
+          "Register and drop a post, and it shows up here.\n\n" +
+          "Posts may disappear later.",
         comments: [],
       },
     ],
   },
 ];
 
-console.log("Clearing existing data...");
 await sql`TRUNCATE votes, posts, communities, users RESTART IDENTITY CASCADE`;
 
-console.log("Creating users...");
 const passwordHash = hash(DEMO_PASSWORD);
 const userRows = [];
 for (const user of users) {
@@ -113,22 +111,20 @@ for (const user of users) {
 }
 const authorId = userRows[0].id;
 
-// Recruiters log in as the demo account, so it should start untouched: no
-// pre-cast votes. Keep it out of the seeded voter pool.
+
 const demoId = userRows[users.findIndex((u) => u.email === "demo@example.com")].id;
 const voterPool = userRows.filter((row) => row.id !== demoId);
 
-// Map usernames to ids so a comment can name its own author (e.g. Vikke's asides).
+
 const idByUsername = new Map(userRows.map((row, i) => [users[i].username, row.id]));
-// Comments without a named author cycle through the other members (not owner or demo).
+
 const commenterPool = userRows.filter((row) => row.id !== authorId && row.id !== demoId);
 
 console.log("Creating communities, posts, comments and votes...");
 let postCount = 0;
 let commentCount = 0;
 let voteCount = 0;
-// Posts are stamped a minute apart, so the first post is the newest. 
-// Both the homepage and the community list sort newest first.
+
 let postSeq = 0;
 
 for (const community of communities) {
@@ -146,7 +142,7 @@ for (const community of communities) {
     postCount++;
     postSeq++;
 
-    // A few upvotes from other users (excluding demo account)
+
     const upvoters = voterPool.slice(0, 2 + Math.floor(Math.random() * (voterPool.length - 1)));
     for (const voter of upvoters) {
       await sql`
@@ -157,7 +153,7 @@ for (const community of communities) {
     }
 
     for (const comment of post.comments) {
-      // Named author (e.g. Vikke) is used as-is; unnamed comments cycle members.
+
       const commentAuthorId = comment.author
         ? idByUsername.get(comment.author)
         : commenterPool[commentCount % commenterPool.length].id;

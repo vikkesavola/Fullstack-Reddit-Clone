@@ -8,9 +8,9 @@ A full-stack Reddit-style forum where users create communities, post, comment in
 
 ## Background
 
-This started as the term project for a full-stack web development course (spring 2026). After the course ended I kept working on it. Since then I have fixed bugs, added usernames and voting, changed how the client and server stay in sync, and deployed it so it runs online rather than only locally.
+This started as a project for a full-stack web development course in spring 2026 (most of it follows the course's instructions). After the course ended I kept working on it. Since then I have fixed bugs, added usernames and voting, changed how the client and server stay in sync, and deployed it so it runs online rather than only locally.
 
-I had two goals: turn a course assignment into something a person can actually use, and learn the things the course did not cover, such as hosting a multi-service app for free and debugging it in production.
+I deployed it so it actually runs online, rewrote the backend in TypeScript, added voting and usernames, and spent a long time fixing bugs that only turned up once there was real data and a real server. The point was to get a course exercise to something usable, and to learn the parts the course didn't cover: hosting a multi-service app and debugging it in production.
 
 ## What it does
 
@@ -24,7 +24,7 @@ I had two goals: turn a course assignment into something a person can actually u
 | Layer | Choice |
 |-------|--------|
 | Frontend | SvelteKit & Tailwind |
-| API | Deno + Hono |
+| API | Deno + Hono, TypeScript |
 | Database | PostgreSQL |
 | Migrations | Flyway |
 | Tests | Playwright |
@@ -41,18 +41,14 @@ flowchart LR
   API -->|SQL| DB[("PostgreSQL<br/>(Neon)")]
 ```
 
-The API is layered. Routes map to controllers, which handle the request and call repositories, which hold the SQL. Nothing above the repository layer writes queries, so the data access stays in one place.
+The API is layered the way the course taught it: routes call controllers, controllers call repositories, and only the repositories write SQL.
 
-A couple of schema decisions worth pointing out:
+Two things about the data model, in case you read the code:
 
-- **Comments are posts.** A comment is a row in the `posts` table with a `parent_post_id` pointing at the post it belongs to. One self-referential table instead of two.
-- **A vote is a row** in a `votes` table keyed by `(user_id, post_id)`, with a unique constraint so a user can vote once per item. Deleting a post cascades to its comments and votes.
+- Comments are posts. A comment is a row in the `posts` table with a `parent_post_id` pointing at the post it belongs to. One self-referential table instead of two.
+- A vote is a row in a `votes` table keyed by `(user_id, post_id)`, with a unique constraint so a user can vote once per item. Deleting a post cascades to its comments and votes.
 
 Authentication is stateless. You log in, get a signed token, and every protected request carries it. The server verifies the signature and keeps no session of its own. Public reads (the homepage, a post) still read your token when it is present, so the API can tell you which way you voted without requiring login to view anything.
-
-## Concepts demonstrated
-
-REST API design, layered architecture, repository pattern, CRUD, relational schema design with a normalized self-referential table, database migrations, parameterized queries (safe against SQL injection), JWT authentication with hashed passwords, end-to-end testing, containerized local development, and push-to-deploy hosting.
 
 ## Running locally
 
@@ -72,7 +68,7 @@ docker compose exec server deno run --allow-env --allow-net seed.ts
 
 ## Testing
 
-Playwright end-to-end tests run against the full stack and cover the core flows: authentication, creating and deleting communities, post creation, voting, and removal, and the same for comments.
+There are Playwright end-to-end tests over the main flows (auth, communities, posts, comments, voting). The coverage is light, though, as I mostly wrote them as an exercise to learn how E2E testing works.
 
 ```bash
 cd e2e-tests && npx playwright test
