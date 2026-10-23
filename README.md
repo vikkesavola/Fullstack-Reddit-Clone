@@ -1,35 +1,35 @@
 # Reddit clone
 
-A full-stack Reddit-style forum where users create communities, post, comment in threads, and vote. A SvelteKit frontend talks to a Deno REST API backed by PostgreSQL.
+A full-stack Reddit-style forum where users create communities, post, comment in threads, and vote. A SvelteKit frontend and a Deno REST API backend with PostgreSQL.
 
-**Live demo:** https://fullstack-reddit-clone-794.pages.dev/
+**Try it out:** https://fullstack-reddit-clone-794.pages.dev/
 
 ![Screenshot of the app](docs/post.png)
 
 ## Background
 
-This started as the term project for a full-stack web development course (spring 2026). After the course ended I kept working on it instead of leaving it as a graded exercise. Since then I have fixed a long list of bugs, added usernames and voting, reworked how the client and server stay in sync, and deployed the whole thing so it runs online rather than only locally.
+This started as the term project for a full-stack web development course (spring 2026). After the course ended I kept working on it. Since then I have fixed bugs, added usernames and voting, changed how the client and server stay in sync, and deployed it so it runs online rather than only locally.
 
-Two goals drove that work: turn a course assignment into something a person can actually use, and learn the parts the course did not cover, such as hosting a multi-service app for free and debugging it in production.
+I had two goals: turn a course assignment into something a person can actually use, and learn the things the course did not cover, such as hosting a multi-service app for free and debugging it in production.
 
 ## What it does
 
 - Register and log in. Passwords are hashed with scrypt; sessions are stateless JWTs sent as Bearer tokens.
 - Create communities, then create and delete posts inside them.
 - Comment on posts and vote posts and comments up or down. Each user gets one vote per item, and clicking the same arrow again removes the vote.
-- A homepage that collects recent posts across communities, each showing its community, author, score, and comment count.
+- A homepage that shows recent posts, each showing its community, author, score, and comment count.
 
 ## Tech stack
 
-| Layer | Choice | Notes |
-|-------|--------|-------|
-| Frontend | SvelteKit (Svelte 5), Tailwind CSS v4 | Single-page app. Reactivity uses Svelte 5 runes. |
-| API | Deno + Hono | Small, fast REST API. The same app object runs locally and when deployed. |
-| Database | PostgreSQL, queried with postgres.js | Parameterized queries throughout. |
-| Migrations | Flyway | Schema changes are versioned (V1 to V9). |
-| Tests | Playwright | End-to-end tests against a running stack. |
-| Local dev | Docker Compose | One command boots the client, API, database, and migrations. |
-| Hosting | Neon, Deno Deploy, Cloudflare Pages | Database, API, and frontend on three free tiers. The frontend and API redeploy on every push to main. |
+| Layer | Choice |
+|-------|--------|
+| Frontend | SvelteKit & Tailwind |
+| API | Deno + Hono |
+| Database | PostgreSQL |
+| Migrations | Flyway |
+| Tests | Playwright |
+| Local dev | Docker Compose |
+| Hosting | Neon, Deno Deploy, Cloudflare Pages |
 
 ## Architecture
 
@@ -52,7 +52,7 @@ Authentication is stateless. You log in, get a signed token, and every protected
 
 ## Concepts demonstrated
 
-REST API design, layered architecture, the repository pattern, CRUD across communities and posts, relational schema design with a normalized self-referential table, database migrations, parameterized queries (safe against SQL injection), JWT authentication with hashed passwords, end-to-end testing, containerized local development, and push-to-deploy hosting.
+REST API design, layered architecture, repository pattern, CRUD, relational schema design with a normalized self-referential table, database migrations, parameterized queries (safe against SQL injection), JWT authentication with hashed passwords, end-to-end testing, containerized local development, and push-to-deploy hosting.
 
 ## Running locally
 
@@ -78,21 +78,8 @@ Playwright end-to-end tests run against the full stack and cover the core flows:
 cd e2e-tests && npx playwright test
 ```
 
-## Project structure
-
-```
-client/               SvelteKit single-page frontend
-server/               Deno + Hono REST API
-  controllers/        request handling
-  repositories/       database queries
-  seed.ts             demo data
-database-migrations/  Flyway SQL migrations (V1..V9)
-e2e-tests/            Playwright tests
-compose.yaml          local dev: client, API, postgres, migrations
-```
 
 ## Possible improvements
 
-- Run the Playwright tests in CI on every push, not only the deploy.
-- Paginate the homepage and community feeds instead of loading every post.
+- Run the Playwright tests in CI on every push.
 - Add role-based access control so community owners can moderate posts and comments, not just their own.
